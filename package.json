@@ -2,10 +2,11 @@
   "name": "backend-aleatory",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "app.js",
   "scripts": {
     "dev": "nodemon -r dotenv/config app.js",
-    "start": "npm-run"
+    "start": "npm-run app.js",
+    "build": "npm-run build"
   },
   "author": "Patrick Anjos",
   "license": "MIT",
