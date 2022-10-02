@@ -13,7 +13,7 @@ app.use(cors());
 
 // Create User
 app.post("/auth/register", async (req, res) => {
-  const { name, email, avatar, role, password } = req.body;
+  const { name, email, avatar, role, assignment, password } = req.body;
 
   if (!name) {
     return res.status(422).json({ message: "Nome é obrigatório!" });
@@ -22,6 +22,12 @@ app.post("/auth/register", async (req, res) => {
     return res.status(422).json({ message: "E-mail é obrigatório!" });
   }
   if (!password) {
+    return res.status(422).json({ message: "Senha é obrigatório!" });
+  }
+  if (!role) {
+    return res.status(422).json({ message: "Senha é obrigatório!" });
+  }
+  if (!assignment) {
     return res.status(422).json({ message: "Senha é obrigatório!" });
   }
 
@@ -44,8 +50,9 @@ app.post("/auth/register", async (req, res) => {
   const person = new Person({
     name,
     email,
-    avatar,
     role,
+    assignment,
+    avatar,
     password: passwordHash,
   });
 
