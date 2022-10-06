@@ -33,7 +33,9 @@ app.post("/auth/register", async (req, res) => {
 
   // Check if exists
 
-  const userExists = await Person.findOne({ email: email, password: password });
+  const userExists = await Person.findOne({
+    email: email,
+  });
 
   if (userExists) {
     return res
@@ -103,6 +105,81 @@ app.post("/auth/signin", async (req, res) => {
       .json({ message: "Autenticação realizada com sucesso!", token, user });
   } catch (error) {
     console.log(error);
+  }
+});
+
+// Find One User
+
+app.get("/user/:id", async (req, res) => {
+  const _id = req.params.id;
+
+  const user = await Person.findById(_id, "-password");
+
+  if (!user) {
+    return res.status(404).json({ message: "User not found." });
+  }
+  res.status(200).json({ user });
+});
+
+// Find All Users
+app.get("/users", async (req, res) => {
+  const users = await Person.find();
+
+  if (!users) {
+    return res.status(404).json({ message: "Users not found." });
+  }
+  res.status(200).json({ users });
+});
+
+// Update User
+
+app.patch("/user/:id", async (req, res) => {
+  const _id = req.params.id;
+  const { name, email, avatar, role, assignment, password } = req.body;
+
+  const salt = await bcrypt.genSalt(12);
+  const passwordHash = await bcrypt.hash(password, salt);
+
+  const user = {
+    name,
+    email,
+    avatar,
+    role,
+    assignment,
+    password: passwordHash,
+  };
+
+  try {
+    const userUpdate = await Person.updateOne({ _id }, user);
+    if (userUpdate) {
+      res.status(200).json({ message: "Usuário Atualizado com Sucesso!" });
+      return;
+    }
+    if (userUpdate.matchedCount === 0) {
+      res.status(422).json({ message: "Não foi possível alterar o usuário" });
+      return;
+    }
+    res.status(200).json(userUpdate);
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+});
+
+// Delete User By ID
+
+app.delete("/user/:id", async (req, res) => {
+  const _id = req.params.id;
+  const user = await Person.findOne({ _id });
+
+  if (!user) {
+    res.status(404).json({ error: "User not found" });
+    return;
+  }
+  try {
+    await Person.deleteOne({ _id });
+    res.status(200).json({ message: "Usuário deletado com Sucesso!" });
+  } catch (error) {
+    res.status(500).json({ error: error });
   }
 });
 
