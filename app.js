@@ -5,6 +5,7 @@ const mongoose = require("mongoose");
 const Person = require("./Models/Person");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const routes = require("./routes");
 
 const app = express();
 
@@ -19,7 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(cors());
+app.use(routes);
 
 // Create User
 app.post("/auth/register", async (req, res) => {
