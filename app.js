@@ -5,7 +5,7 @@ const mongoose = require("mongoose");
 const Person = require("./Models/Person");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const routes = require("./routes");
+const SendMessageController = require("./Controller/SendMessageController");
 
 const app = express();
 
@@ -20,7 +20,7 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(routes);
+app.use("/send", SendMessageController.sendMessage);
 
 // Create User
 app.post("/auth/register", async (req, res) => {
